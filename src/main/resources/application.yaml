@@ -1,0 +1,59 @@
+server:
+  version: 0.0.1
+  name: Muf
+  site: "http://127.0.0.1:8088"
+
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: "access [%{yyyy-MM-dd'T'HH:mm.ss'Z'}t] %r %s %D %h"
+    basedir: accesslog
+  port: 8088
+mail:
+  username: test@gmail.com
+  password: test
+  from: test
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://192.168.99.100:6432/muf
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        temp.use_jdbc_metadata_defaults: false
+
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+security:
+  jwt:
+    token:
+      secret-key: XG79AZCRs2WwDFXkRarcbEzV7J4YaeUBRcPv0Wb6aifgUKQ8ZAUtjoximqiGaip
+      expire-length:         360000000
+      header-string: Authorization
+redis:
+  host: 192.168.99.100
+  port: 6379
+  database: 0
+  prefix: "muf:1:"
+
+com:
+  krenog:
+    filter:
+      excluded:
+        - /docs/**
+        - /swagger-ui.html
+        - /*
+        - /webjars/**
+        - /swagger-resources/**
+        - /api/v1/auth/send-sms-code
+        - /api/v1/auth/send-sms-code/
+        - /api/v1/auth/sign-in
+        - /api/v1/auth/sign-in/
+        - /api/v1/check-alive
+        - /api/v1/check-alive/

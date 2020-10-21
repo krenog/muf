@@ -1,6 +1,5 @@
 package com.krenog.myf.security.jwt;
 
-import com.krenog.myf.security.detail.UserDetailServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,12 +20,10 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private static final Logger log = LogManager.getLogger(JwtAuthTokenFilter.class);
     private final JwtConfig jwtConfig;
     private final JwtProvider tokenProvider;
-    private final UserDetailServiceImpl userDetailsService;
 
-    public JwtAuthTokenFilter(JwtConfig jwtConfig, JwtProvider tokenProvider, UserDetailServiceImpl userDetailsService) {
+    public JwtAuthTokenFilter(JwtConfig jwtConfig, JwtProvider tokenProvider) {
         this.jwtConfig = jwtConfig;
         this.tokenProvider = tokenProvider;
-        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -35,8 +32,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             String jwt = getJwt(httpServletRequest);
             // 2. validate the header and check the prefix
             if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
-                String username = tokenProvider.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = tokenProvider.parseToken(jwt);
                 UsernamePasswordAuthenticationToken authentication
                         = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());

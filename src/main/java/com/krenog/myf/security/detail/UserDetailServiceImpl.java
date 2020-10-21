@@ -27,12 +27,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String phone) {
-        Optional<User> user = userRepository.findByPhoneNumber(phone);
+    public UserDetails loadUserByUsername(String username) {
+        Optional<User> user = userRepository.getByUsername(username);
         if (user.isPresent()) {
             return UserPrincipal.build(user.get());
         } else {
-            throw new UsernameNotFoundException("User Not Found with -> phone : " + phone);
+            throw new UsernameNotFoundException("User Not Found with -> username : " + username);
         }
     }
 }

@@ -1,12 +1,16 @@
 package com.krenog.myf.security.jwt;
 
-import io.jsonwebtoken.*;
+import com.krenog.myf.security.detail.UserPrincipal;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.util.*;
 
 @Component
 public class JwtProvider {
@@ -17,14 +21,31 @@ public class JwtProvider {
         this.jwtConfig = jwtConfig;
     }
 
-    public String generateJwtToken(Authentication authentication) {
-        String userPrincipal = (String) authentication.getPrincipal();
+    public String generateJwtToken(UserPrincipal userPrincipal) {
+        Map<String, Object> privateClaims = new HashMap<>();
+        privateClaims.put(jwtConfig.getUserIdClaimKey(), userPrincipal.getId());
+        privateClaims.put(jwtConfig.getUserAuthoritiesClaimKey(), userPrincipal.getAuthorities());
+
         return Jwts.builder()
-                .setSubject(userPrincipal)
+                // Add private claims (this needs to come first or it will override everything else)
+                .setClaims(privateClaims)
+                // Random ID generated
+                .setId(UUID.randomUUID().toString())
+                // App is the issuer and also intended audience. User is principal subject
+                .setIssuer(jwtConfig.getAppName())
+                .setAudience(jwtConfig.getAppName())
+                .setSubject(userPrincipal.getUsername())
+                // Setup timestamp and validity
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtConfig.getExpiration()))
+                .setNotBefore(new Date())
+                .setExpiration(generateExpirationDate())
+                // Sign and generate token
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
+    }
+
+    private Date generateExpirationDate() {
+        return new Date(System.currentTimeMillis() + jwtConfig.getExpiration() * 1000);
     }
 
     String getUserNameFromJwtToken(String token) {
@@ -34,22 +55,40 @@ public class JwtProvider {
                 .getBody().getSubject();
     }
 
-    boolean validateJwtToken(String authToken) {
-        try {
-
-            Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(authToken);
-            return true;
-        } catch (SignatureException e) {
-            logger.info("Invalid JWT signature -> Message: {} ", e.getMessage());
-        } catch (MalformedJwtException e) {
-            logger.info("Invalid JWT token -> Message: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.info("Expired JWT token -> Message: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.info("Unsupported JWT token -> Message: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            logger.info("JWT claims string is empty -> Message: {}", e.getMessage());
+    UserPrincipal parseToken(String token) {
+        // First, validate token
+        if (!validateJwtToken(token)) {
+            throw new IllegalArgumentException("JWT not valid : " + token);
         }
-        return false;
+
+        // Extract claims
+        Jws<Claims> jwt = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token);
+        Claims claims = jwt.getBody();
+
+        // Build User from JWT
+//        Set<GrantedAuthority> grantedAuthorities = (Set<GrantedAuthority>)((List)claims.get(userAuthoritiesClaimKey)).stream()
+//                .map(elem -> ((Map)elem).get("authority"))
+//                .map(authority -> new SimpleGrantedAuthority((String)authority))
+//                .collect(Collectors.toSet());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        return new UserPrincipal(Long.valueOf((Integer) claims.get(jwtConfig.getUserIdClaimKey())), claims.getSubject(),
+                "", authorities);
+    }
+
+
+    Boolean validateJwtToken(String token) {
+        try {
+            // Check JWT signature and audience
+            Jws<Claims> jwt = Jwts.parser()
+                    .setSigningKey(jwtConfig.getSecret())
+                    .requireAudience(jwtConfig.getAppName())
+                    .parseClaimsJws(token);
+
+            // Make sure JWT is still valid  (notBefore < now < expiration)
+            return jwt.getBody().getNotBefore().before(new Date()) && jwt.getBody().getExpiration().after(new Date());
+        } catch (Exception ex) {
+            logger.error("JWT not properly signed or with wrong audience : " + token);
+            return false;
+        }
     }
 }

@@ -15,7 +15,40 @@ public class JwtConfig {
     @Value("${security.jwt.token.secret-key}")
     private String secret;
 
-    public String getHeader() {
+    @Value("${security.jwt.claim.userAuthorities}")
+    private String userAuthoritiesClaimKey;
+
+    @Value("${security.jwt.claim.userId}")
+    private String userIdClaimKey;
+
+    @Value("${security.jwt.audience}")
+    private String appName;
+
+    String getUserAuthoritiesClaimKey() {
+        return userAuthoritiesClaimKey;
+    }
+
+    public void setUserAuthoritiesClaimKey(String userAuthoritiesClaimKey) {
+        this.userAuthoritiesClaimKey = userAuthoritiesClaimKey;
+    }
+
+    String getUserIdClaimKey() {
+        return userIdClaimKey;
+    }
+
+    public void setUserIdClaimKey(String userIdClaimKey) {
+        this.userIdClaimKey = userIdClaimKey;
+    }
+
+    String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    String getHeader() {
         return header;
     }
 
@@ -23,7 +56,7 @@ public class JwtConfig {
         this.header = header;
     }
 
-    public long getExpiration() {
+    long getExpiration() {
         return expiration;
     }
 
@@ -31,7 +64,7 @@ public class JwtConfig {
         this.expiration = expiration;
     }
 
-    public String getSecret() {
+    String getSecret() {
         return secret;
     }
 

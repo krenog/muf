@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "myf_user")
 public class User extends BaseEntity {
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @Column(name = "email")
@@ -24,10 +24,21 @@ public class User extends BaseEntity {
     @Column(name = "push_token")
     private String pushToken;
 
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
+
     @PrePersist
     @PreUpdate
     public void preUpdate() {
         super.setUpdateDate(LocalDateTime.now());
+    }
+
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public String getPushToken() {

@@ -2,7 +2,6 @@ server:
   version: 0.0.1
   name: Muf
   site: "http://127.0.0.1:8088"
-
   tomcat:
     accesslog:
       enabled: true
@@ -10,9 +9,6 @@ server:
     basedir: accesslog
   port: 8088
 mail:
-  username: test@gmail.com
-  password: test
-  from: test
 spring:
   datasource:
     hikari:
@@ -36,12 +32,34 @@ security:
       secret-key: XG79AZCRs2WwDFXkRarcbEzV7J4YaeUBRcPv0Wb6aifgUKQ8ZAUtjoximqiGaip
       expire-length:         360000000
       header-string: Authorization
+    claim:
+      userAuthorities: aut
+      userId: uid
+      : "myf"
 redis:
   host: 192.168.99.100
   port: 6379
   database: 0
   prefix: "muf:1:"
+httpclient:
+  pool:
+    max-size: 128
+    per-route-size: 24
+  timeout:
+    connection: 60000
+    socket: 240000
+sms:
+  sms-length: 6
+  enabled: false
+  smsc:
+    url: https://smsc.ru/sys/send.php
+    originator: MUF
+    login: "krenog"
+    password: "aseaf19450"
 
+  test:
+    code: 389153
+    phone: 9999999999
 com:
   krenog:
     filter:
@@ -51,9 +69,6 @@ com:
         - /*
         - /webjars/**
         - /swagger-resources/**
-        - /api/v1/auth/send-sms-code
-        - /api/v1/auth/send-sms-code/
-        - /api/v1/auth/sign-in
-        - /api/v1/auth/sign-in/
+        - /api/v1/auth/**
         - /api/v1/check-alive
         - /api/v1/check-alive/

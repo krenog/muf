@@ -36,7 +36,7 @@ public class UserPrincipal implements UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
         return new UserPrincipal(
                 user.getId(),
-                user.getPhoneNumber(),
+                user.getUsername(),
                 "",
                 authorities
         );

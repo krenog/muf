@@ -15,7 +15,7 @@ spring:
       maximum-pool-size: 20
     username: postgres
     password: postgres
-    url: jdbc:postgresql://192.168.99.100:6432/muf
+    url: jdbc:postgresql://localhost:5432/myf
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
@@ -35,12 +35,12 @@ security:
     claim:
       userAuthorities: aut
       userId: uid
-      : "myf"
+    audience: "myf"
 redis:
-  host: 192.168.99.100
+  host: localhost
   port: 6379
   database: 0
-  prefix: "muf:1:"
+  prefix: "myf:1:"
 httpclient:
   pool:
     max-size: 128
@@ -56,10 +56,9 @@ sms:
     originator: MUF
     login: "krenog"
     password: "aseaf19450"
-
   test:
     code: 389153
-    phone: 9999999999
+    phone: 79999999999
 com:
   krenog:
     filter:
@@ -72,3 +71,7 @@ com:
         - /api/v1/auth/**
         - /api/v1/check-alive
         - /api/v1/check-alive/
+        - /api/v1/user/check-phone
+        - /api/v1/user/check-phone/
+        - /api/v1/user/check-username
+        - /api/v1/user/check-username/

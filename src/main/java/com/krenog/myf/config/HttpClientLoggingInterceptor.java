@@ -17,7 +17,7 @@ public class HttpClientLoggingInterceptor implements HttpRequestInterceptor, Htt
     private static final int MAX_CONTENT_LEN = 8048;
     private static final int DEFAULT_BUFFER_SIZE = MAX_CONTENT_LEN + 512;
     private static final String REQUEST_TEXT_ID = "http.client.logging.requestText";
-    private static Logger logger = LogManager.getLogger(HttpClientLoggingInterceptor.class);
+    private static final Logger logger = LogManager.getLogger(HttpClientLoggingInterceptor.class);
 
     @Override
     public void process(HttpRequest req, HttpContext context) {

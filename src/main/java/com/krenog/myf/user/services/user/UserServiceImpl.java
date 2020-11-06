@@ -3,6 +3,8 @@ package com.krenog.myf.user.services.user;
 import com.krenog.myf.exceptions.NotFoundException;
 import com.krenog.myf.user.entities.User;
 import com.krenog.myf.user.repositories.UserRepository;
+import com.krenog.myf.user.services.authentication.exceptions.UserAlreadyExistException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,11 +27,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public User createUser(String phoneNumber, String username) {
-        // TODO: 20.10.2020 Unique Violation Exceptions catching
         User user = new User();
         user.setPhoneNumber(phoneNumber);
         user.setUsername(username);
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throw new UserAlreadyExistException();
+        }
     }
 
     @Override

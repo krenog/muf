@@ -42,14 +42,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Boolean isTrafficEnabled = authenticationConfig.isTrafficEnabled() && !phone.equals(authenticationConfig.getPhone());
         String code = generateCode(isTrafficEnabled);
         saveCodeInCache(code, phone);
-        if (Boolean.TRUE.equals(isTrafficEnabled)) {
+        if (isTrafficEnabled) {
             smsService.sendSms(phone, code);
         }
     }
 
     private String generateCode(Boolean isTrafficEnabled) {
         String code = authenticationConfig.getTestCode();
-        if (Boolean.TRUE.equals(isTrafficEnabled)) {
+        if (isTrafficEnabled) {
             code = RandomSmsCodeGenerator.generateCode(authenticationConfig.getLength());
         }
         return code;
@@ -72,7 +72,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthenticationData signUp(SignUpRequestDto signUpRequestDto) {
         validateSmsCode(signUpRequestDto.getPhoneNumber(), signUpRequestDto.getCode());
-        checkUserInfo(signUpRequestDto);
         User user = userService.createUser(signUpRequestDto.getPhoneNumber(), signUpRequestDto.getUsername());
         return buildAuthenticationData(user);
     }
@@ -114,14 +113,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private void deleteCodeFromCache(String phoneNumber) {
         cacheService.deleteValue(phoneNumber);
         cacheService.deleteValue(phoneNumber + CACHE_COUNT_STRING);
-    }
-
-    private void checkUserInfo(SignUpRequestDto signUpRequestDto) {
-        Boolean phoneExist = userService.checkPhoneNumberIsExist(signUpRequestDto.getPhoneNumber());
-        Boolean usernameExist = userService.checkUsernameIsExist(signUpRequestDto.getUsername());
-        if (phoneExist || usernameExist) {
-            throw new UserAlreadyExistException();
-        }
     }
 
     private AuthenticationData buildAuthenticationData(User user) {

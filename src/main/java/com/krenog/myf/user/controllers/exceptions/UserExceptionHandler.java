@@ -31,7 +31,7 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
         ERROR_MAPPING.put(CodeDoesNotExistException.class, new TypeOfResponse(HttpStatus.INTERNAL_SERVER_ERROR, "code_does_not_exist", "Укажите снова номер телефона и код из SMS для продолжения работы."));
         ERROR_MAPPING.put(InvalidVerificationCodeException.class, new TypeOfResponse(HttpStatus.UNAUTHORIZED, "invalid_verification_code", "Указан неверный код. Запросите новое SMS."));
         ERROR_MAPPING.put(NumberCodeAttemptsException.class, new TypeOfResponse(HttpStatus.TOO_MANY_REQUESTS, "number_code_attempts", "Превышено допустимое количество ошибок. Запросите новое SMS с кодом."));
-        ERROR_MAPPING.put(UserAlreadyExistException.class, new TypeOfResponse(HttpStatus.TOO_MANY_REQUESTS, "user_already_exist", "Пользователь с таким телефоном или никнеймом уже существует"));
+        ERROR_MAPPING.put(UserAlreadyExistException.class, new TypeOfResponse(HttpStatus.BAD_REQUEST, "user_already_exist", "Пользователь с таким телефоном или никнеймом уже существует"));
     }
 
 

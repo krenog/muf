@@ -13,6 +13,14 @@ public class SignInRequestDto {
     @JsonProperty("code")
     private String code;
 
+    public SignInRequestDto() {
+    }
+
+    public SignInRequestDto(@NotBlank @Size(max = 11) String phoneNumber, String code) {
+        this.phoneNumber = phoneNumber;
+        this.code = code;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }

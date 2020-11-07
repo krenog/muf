@@ -1,6 +1,7 @@
 package com.krenog.myf.user.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.krenog.myf.user.services.authentication.AuthenticationData;
 
 public class UserDataDto {
     @JsonProperty("id")
@@ -16,13 +17,13 @@ public class UserDataDto {
     @JsonProperty("lastName")
     private String lastName;
 
-    public UserDataDto(Long id, String phoneNumber, String username, String email, String firstName, String lastName) {
-        this.id = id;
-        this.phoneNumber = phoneNumber;
-        this.username = username;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public UserDataDto(AuthenticationData authenticationData) {
+        this.id = authenticationData.getId();
+        this.phoneNumber = authenticationData.getPhoneNumber();
+        this.username = authenticationData.getUsername();
+        this.email = authenticationData.getEmail();
+        this.firstName = authenticationData.getFirstName();
+        this.lastName = authenticationData.getLastName();
     }
 
     public Long getId() {

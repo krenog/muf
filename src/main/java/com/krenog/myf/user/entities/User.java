@@ -1,5 +1,7 @@
 package com.krenog.myf.user.entities;
 
+import com.krenog.myf.user.services.user.CreateUserData;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -35,6 +37,14 @@ public class User extends BaseEntity {
     @PreUpdate
     public void preUpdate() {
         super.setUpdateDate(LocalDateTime.now());
+    }
+
+    public User() {
+    }
+
+    public User(CreateUserData userData) {
+        this.phoneNumber = userData.getPhoneNumber();
+        this.username = userData.getUsername();
     }
 
     public LocalDateTime getLastLogin() {

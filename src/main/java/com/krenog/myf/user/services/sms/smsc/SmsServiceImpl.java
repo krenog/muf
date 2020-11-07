@@ -29,18 +29,22 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public void sendSms(String phone, String message) {
         try {
-            URI uri = new URIBuilder(smscConfig.getUrl())
-                    .setCharset(StandardCharsets.UTF_8)
-                    .addParameter("login", smscConfig.getLogin())
-                    .addParameter("psw", smscConfig.getPassword())
-                    .addParameter("phones", phone)
-                    .addParameter("mes", message)
-                    .build();
+            URI uri = buildURI(phone, message);
             restTemplate.postForObject(uri, null, String.class);
         } catch (URISyntaxException | RestClientException e) {
             logger.error("Send sms message error", e);
             throw new SendSmsException();
         }
 
+    }
+
+    private URI buildURI(String phone, String message) throws URISyntaxException {
+        return new URIBuilder(smscConfig.getUrl())
+                .setCharset(StandardCharsets.UTF_8)
+                .addParameter("login", smscConfig.getLogin())
+                .addParameter("psw", smscConfig.getPassword())
+                .addParameter("phones", phone)
+                .addParameter("mes", message)
+                .build();
     }
 }

@@ -2,6 +2,7 @@ package com.krenog.myf.user.controllers.exceptions;
 
 import com.krenog.myf.dto.ErrorResponse;
 import com.krenog.myf.dto.TypeOfResponse;
+import com.krenog.myf.exceptions.NotFoundException;
 import com.krenog.myf.user.controllers.AuthenticationController;
 import com.krenog.myf.user.controllers.UserController;
 import com.krenog.myf.user.services.authentication.exceptions.CodeDoesNotExistException;
@@ -32,6 +33,7 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
         ERROR_MAPPING.put(InvalidVerificationCodeException.class, new TypeOfResponse(HttpStatus.UNAUTHORIZED, "invalid_verification_code", "Указан неверный код. Запросите новое SMS."));
         ERROR_MAPPING.put(NumberCodeAttemptsException.class, new TypeOfResponse(HttpStatus.TOO_MANY_REQUESTS, "number_code_attempts", "Превышено допустимое количество ошибок. Запросите новое SMS с кодом."));
         ERROR_MAPPING.put(UserAlreadyExistException.class, new TypeOfResponse(HttpStatus.BAD_REQUEST, "user_already_exist", "Пользователь с таким телефоном или никнеймом уже существует"));
+        ERROR_MAPPING.put(NotFoundException.class, new TypeOfResponse(HttpStatus.BAD_REQUEST, "user_not_found", "Пользователь с таким телефоном не существует"));
     }
 
 

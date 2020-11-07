@@ -12,14 +12,7 @@ public class SignInResponseDto {
     private String token;
 
     public SignInResponseDto(AuthenticationData data) {
-        this.user = new UserDataDto(
-                data.getId(),
-                data.getPhoneNumber(),
-                data.getUsername(),
-                data.getEmail(),
-                data.getFirstName(),
-                data.getLastName()
-        );
+        this.user = new UserDataDto(data);
         this.token = data.getToken();
     }
 

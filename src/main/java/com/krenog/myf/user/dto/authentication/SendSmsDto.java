@@ -11,6 +11,13 @@ public class SendSmsDto {
     @Size(max = 11)
     private String phoneNumber;
 
+    public SendSmsDto(@NotBlank @Size(max = 11) String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public SendSmsDto() {
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }

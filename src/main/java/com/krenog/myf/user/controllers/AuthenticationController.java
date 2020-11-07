@@ -29,15 +29,13 @@ public class AuthenticationController {
 
     @PostMapping(value = "/sign-in")
     public ResponseEntity<SignInResponseDto> signIn(@RequestBody SignInRequestDto dto) {
-        AuthenticationData data = authenticationService.signIn(dto);
-        SignInResponseDto signInResponseDto = new SignInResponseDto(data);
-        return new ResponseEntity<>(signInResponseDto, HttpStatus.OK);
+        AuthenticationData authenticationData = authenticationService.signIn(dto);
+        return new ResponseEntity<>(new SignInResponseDto(authenticationData), HttpStatus.OK);
     }
 
     @PostMapping(value = "/sign-up")
     public ResponseEntity<SignInResponseDto> sendSmsCode(@RequestBody SignUpRequestDto dto) {
-        AuthenticationData data = authenticationService.signUp(dto);
-        SignInResponseDto signInResponseDto = new SignInResponseDto(data);
-        return new ResponseEntity<>(signInResponseDto, HttpStatus.OK);
+        AuthenticationData authenticationData = authenticationService.signUp(dto);
+        return new ResponseEntity<>(new SignInResponseDto(authenticationData), HttpStatus.OK);
     }
 }

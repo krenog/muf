@@ -1,5 +1,6 @@
 package com.krenog.myf.user.security.jwt;
 
+import com.krenog.myf.user.security.detail.UserDetailServiceImpl;
 import com.krenog.myf.user.security.detail.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -7,15 +8,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class JwtProvider {
     private static final Logger logger = LogManager.getLogger(JwtProvider.class);
     private final JwtConfig jwtConfig;
+    @Autowired
+    UserDetailServiceImpl userDetailService;
 
     public JwtProvider(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
@@ -55,24 +62,14 @@ public class JwtProvider {
                 .getBody().getSubject();
     }
 
-    UserPrincipal parseToken(String token) {
-        // First, validate token
+    UserDetails parseToken(String token) {
         if (!validateJwtToken(token)) {
             throw new IllegalArgumentException("JWT not valid : " + token);
         }
-
         // Extract claims
         Jws<Claims> jwt = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token);
         Claims claims = jwt.getBody();
-
-        // Build User from JWT
-//        Set<GrantedAuthority> grantedAuthorities = (Set<GrantedAuthority>)((List)claims.get(userAuthoritiesClaimKey)).stream()
-//                .map(elem -> ((Map)elem).get("authority"))
-//                .map(authority -> new SimpleGrantedAuthority((String)authority))
-//                .collect(Collectors.toSet());
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        return new UserPrincipal(Long.valueOf((Integer) claims.get(jwtConfig.getUserIdClaimKey())), claims.getSubject(),
-                "", authorities);
+        return userDetailService.loadById(Long.valueOf((Integer) claims.get(jwtConfig.getUserIdClaimKey())));
     }
 
 

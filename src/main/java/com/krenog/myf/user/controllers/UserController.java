@@ -23,9 +23,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/check-phone")
-    public ResponseEntity<CheckExistResponseDto> checkPhoneNumber(@RequestBody CheckPhoneNumberRequestDto checkUsernameRequestDto) {
-        Boolean isUsernameExist = userService.checkPhoneNumberIsExist(checkUsernameRequestDto.getPhoneNumber());
-        return new ResponseEntity<>(new CheckExistResponseDto(isUsernameExist), HttpStatus.OK);
+    public ResponseEntity<CheckExistResponseDto> checkPhoneNumber(@RequestBody CheckPhoneNumberRequestDto checkPhoneNumberRequestDto) {
+        Boolean isPhoneNumber = userService.checkPhoneNumberIsExist(checkPhoneNumberRequestDto.getPhoneNumber());
+        return new ResponseEntity<>(new CheckExistResponseDto(isPhoneNumber), HttpStatus.OK);
     }
 
     @PostMapping(value = "/check-username")

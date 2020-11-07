@@ -8,7 +8,7 @@ import com.krenog.myf.user.entities.User;
 public interface UserService {
     User getUserByPhoneNumber(String phoneNumber);
 
-    User createUser(String phoneNumber, String username);
+    User createUser(CreateUserData createUserData);
 
     void updateLastLogin(User user);
 

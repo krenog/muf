@@ -26,10 +26,8 @@ public class UserServiceImpl implements UserService {
         });
     }
 
-    public User createUser(String phoneNumber, String username) {
-        User user = new User();
-        user.setPhoneNumber(phoneNumber);
-        user.setUsername(username);
+    public User createUser(CreateUserData createUserData) {
+        User user = new User(createUserData);
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {

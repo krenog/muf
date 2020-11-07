@@ -11,6 +11,14 @@ public class SignUpRequestDto extends SignInRequestDto {
     @Size(min = 5)
     private String username;
 
+    public SignUpRequestDto() {
+    }
+
+    public SignUpRequestDto(@NotBlank @Size(max = 11) String phoneNumber, String code, @NotBlank @Size(min = 5) String username) {
+        super(phoneNumber, code);
+        this.username = username;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
+import static com.krenog.myf.user.UserTestUtils.*;
+
 @SpringBootTest
 public class AuthenticationServiceTests {
     @Autowired
@@ -25,43 +27,39 @@ public class AuthenticationServiceTests {
     private UserRepository userRepository;
 
 
-    private static final String PHONE_NUMBER = "7999999999";
-    private static final String USERNAME = "test";
-    private static final String TEST_CODE = "389153";
-    private static final String CACHE_COUNT_STRING = "_count_try_code";
     private static final SignInRequestDto signInRequestDto;
     private static final SignUpRequestDto signUpRequestDto;
 
     static {
         signInRequestDto = new SignInRequestDto();
-        signInRequestDto.setPhoneNumber(PHONE_NUMBER);
+        signInRequestDto.setPhoneNumber(TEST_PHONE_NUMBER);
         signInRequestDto.setCode(TEST_CODE);
 
         signUpRequestDto = new SignUpRequestDto();
-        signUpRequestDto.setPhoneNumber(PHONE_NUMBER);
+        signUpRequestDto.setPhoneNumber(TEST_PHONE_NUMBER);
         signUpRequestDto.setCode(TEST_CODE);
-        signUpRequestDto.setUsername(USERNAME);
+        signUpRequestDto.setUsername(TEST_USERNAME);
     }
 
 
     @BeforeEach
     void setBeforeEach() {
-        Optional<User> user = userRepository.getByPhoneNumber(PHONE_NUMBER);
+        Optional<User> user = userRepository.getByPhoneNumber(TEST_PHONE_NUMBER);
         user.ifPresent(value -> userRepository.delete(value));
     }
 
     private User saveUser() {
         User user = new User();
-        user.setPhoneNumber(PHONE_NUMBER);
-        user.setUsername(USERNAME);
+        user.setPhoneNumber(TEST_PHONE_NUMBER);
+        user.setUsername(TEST_USERNAME);
         return userRepository.save(user);
     }
 
     @Test
     void sendSmsTest() {
-        authenticationService.sendSmsCode(PHONE_NUMBER);
-        String cacheCode = cacheService.getValue(PHONE_NUMBER);
-        String codeTryKey = PHONE_NUMBER + CACHE_COUNT_STRING;
+        authenticationService.sendSmsCode(TEST_PHONE_NUMBER);
+        String cacheCode = cacheService.getValue(TEST_PHONE_NUMBER);
+        String codeTryKey = TEST_PHONE_NUMBER + TEST_CACHE_COUNT_STRING;
         String count = cacheService.getValue(codeTryKey);
         Assertions.assertEquals(TEST_CODE, cacheCode);
         Assertions.assertEquals("0", count);
@@ -71,8 +69,8 @@ public class AuthenticationServiceTests {
     void signInTest() {
         //prepare data
         User user = saveUser();
-        cacheService.setValue(PHONE_NUMBER, TEST_CODE);
-        String codeTryKey = PHONE_NUMBER + CACHE_COUNT_STRING;
+        cacheService.setValue(TEST_PHONE_NUMBER, TEST_CODE);
+        String codeTryKey = TEST_PHONE_NUMBER + TEST_CACHE_COUNT_STRING;
         cacheService.setValue(codeTryKey, "0");
         //call
         AuthenticationData authenticationData = authenticationService.signIn(signInRequestDto);
@@ -85,8 +83,8 @@ public class AuthenticationServiceTests {
     @Test
     void signUpTest() {
         //prepare data
-        cacheService.setValue(PHONE_NUMBER, TEST_CODE);
-        String codeTryKey = PHONE_NUMBER + CACHE_COUNT_STRING;
+        cacheService.setValue(TEST_PHONE_NUMBER, TEST_CODE);
+        String codeTryKey = TEST_PHONE_NUMBER + TEST_CACHE_COUNT_STRING;
         cacheService.setValue(codeTryKey, "0");
         //call
         AuthenticationData authenticationData = authenticationService.signUp(signUpRequestDto);

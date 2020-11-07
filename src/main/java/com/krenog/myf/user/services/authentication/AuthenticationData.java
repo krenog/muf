@@ -11,6 +11,9 @@ public class AuthenticationData {
     private String firstName;
     private String lastName;
 
+    public AuthenticationData() {
+    }
+
     AuthenticationData(String token, User user) {
         this.id = user.getId();
         this.token = token;
@@ -20,6 +23,7 @@ public class AuthenticationData {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
     }
+
 
     public Long getId() {
         return id;

@@ -1,4 +1,4 @@
-package com.krenog.myf.user.entities;
+package com.krenog.myf.event.entities;
 
 public enum InviteStatus {
     CREATED,

@@ -3,10 +3,8 @@ package com.krenog.myf.user.controller;
 import com.krenog.myf.exceptions.NotFoundException;
 import com.krenog.myf.user.controllers.AuthenticationController;
 import com.krenog.myf.user.controllers.exceptions.UserExceptionHandler;
-import com.krenog.myf.user.dto.authentication.SendSmsDto;
 import com.krenog.myf.user.dto.authentication.SignInRequestDto;
 import com.krenog.myf.user.dto.authentication.SignUpRequestDto;
-import com.krenog.myf.user.services.authentication.AuthenticationData;
 import com.krenog.myf.user.services.authentication.AuthenticationServiceImpl;
 import com.krenog.myf.user.services.authentication.exceptions.CodeDoesNotExistException;
 import com.krenog.myf.user.services.authentication.exceptions.InvalidVerificationCodeException;
@@ -27,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static com.krenog.myf.user.UserTestUtils.*;
 import static com.krenog.myf.utils.TestConverter.checkTestErrorCode;
 import static com.krenog.myf.utils.TestConverter.mapToJson;
+import static com.krenog.myf.utils.TestUtils.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -42,24 +41,6 @@ public class MockAuthenticationControllerTests {
     private AuthenticationServiceImpl authenticationService;
     @InjectMocks
     AuthenticationController authenticationController;
-    private static final SendSmsDto sendSmsDto;
-    private static final SignInRequestDto signInRequestDto;
-    private static final SignUpRequestDto signUpRequestDto;
-    private static final AuthenticationData authenticationData;
-
-    static {
-        sendSmsDto = new SendSmsDto(TEST_PHONE_NUMBER);
-
-        signInRequestDto = new SignInRequestDto(TEST_PHONE_NUMBER, TEST_CODE);
-
-        signUpRequestDto = new SignUpRequestDto(TEST_PHONE_NUMBER, TEST_CODE, TEST_USERNAME);
-
-        authenticationData = new AuthenticationData();
-        authenticationData.setId(TEST_ID);
-        authenticationData.setPhoneNumber(TEST_PHONE_NUMBER);
-        authenticationData.setToken(TEST_TOKEN);
-        authenticationData.setUsername(TEST_USERNAME);
-    }
 
     @BeforeEach
     public void setUp() {
@@ -74,7 +55,7 @@ public class MockAuthenticationControllerTests {
             throws Exception {
         mockMvc.perform(post("/api/v1/auth/send-sms-code/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(sendSmsDto)))
+                .content(mapToJson(SEND_SMS_DTO)))
                 .andExpect(status().isOk());
     }
 
@@ -85,7 +66,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/send-sms-code/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(sendSmsDto)))
+                .content(mapToJson(SEND_SMS_DTO)))
                 .andExpect(status().isBadGateway()).andReturn();
         checkTestErrorCode(result, "sms_traffic_unavailable");
     }
@@ -94,11 +75,11 @@ public class MockAuthenticationControllerTests {
     void signInTest_thenReturnOK() throws Exception {
         //define data
         Mockito.when(authenticationService.signIn(any(SignInRequestDto.class)))
-                .thenReturn(authenticationData);
+                .thenReturn(AUTHENTICATION_DATA);
 
         mockMvc.perform(post("/api/v1/auth/sign-in/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signInRequestDto)))
+                .content(mapToJson(SIGN_IN_REQUEST_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.user.id", is(TEST_ID.intValue())))
                 .andExpect(jsonPath("$.user.phoneNumber", is(TEST_PHONE_NUMBER)))
@@ -114,7 +95,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-in/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signInRequestDto)))
+                .content(mapToJson(SIGN_IN_REQUEST_DTO)))
                 .andExpect(status().isBadRequest()).andReturn();
         checkTestErrorCode(result, "user_not_found");
     }
@@ -127,7 +108,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-in/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signInRequestDto)))
+                .content(mapToJson(SIGN_IN_REQUEST_DTO)))
                 .andExpect(status().isInternalServerError()).andReturn();
         checkTestErrorCode(result, "code_does_not_exist");
     }
@@ -141,7 +122,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-in/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signInRequestDto)))
+                .content(mapToJson(SIGN_IN_REQUEST_DTO)))
                 .andExpect(status().isUnauthorized()).andReturn();
         checkTestErrorCode(result, "invalid_verification_code");
     }
@@ -155,7 +136,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-in/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signInRequestDto)))
+                .content(mapToJson(SIGN_IN_REQUEST_DTO)))
                 .andExpect(status().isTooManyRequests()).andReturn();
         checkTestErrorCode(result, "number_code_attempts");
     }
@@ -164,11 +145,11 @@ public class MockAuthenticationControllerTests {
     void signUpTest_thenReturnOK() throws Exception {
         //define data
         Mockito.when(authenticationService.signUp(any(SignUpRequestDto.class)))
-                .thenReturn(authenticationData);
+                .thenReturn(AUTHENTICATION_DATA);
 
         mockMvc.perform(post("/api/v1/auth/sign-up/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signUpRequestDto)))
+                .content(mapToJson(SIGN_UP_REQUEST_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.user.id", is(TEST_ID.intValue())))
                 .andExpect(jsonPath("$.user.phoneNumber", is(TEST_PHONE_NUMBER)))
@@ -184,7 +165,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-up/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signUpRequestDto)))
+                .content(mapToJson(SIGN_UP_REQUEST_DTO)))
                 .andExpect(status().isBadRequest()).andReturn();
         checkTestErrorCode(result, "user_already_exist");
     }
@@ -197,7 +178,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-up/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signUpRequestDto)))
+                .content(mapToJson(SIGN_UP_REQUEST_DTO)))
                 .andExpect(status().isInternalServerError()).andReturn();
         checkTestErrorCode(result, "code_does_not_exist");
     }
@@ -211,7 +192,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-up/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signUpRequestDto)))
+                .content(mapToJson(SIGN_UP_REQUEST_DTO)))
                 .andExpect(status().isUnauthorized()).andReturn();
         checkTestErrorCode(result, "invalid_verification_code");
     }
@@ -225,7 +206,7 @@ public class MockAuthenticationControllerTests {
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/sign-up/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(signUpRequestDto)))
+                .content(mapToJson(SIGN_UP_REQUEST_DTO)))
                 .andExpect(status().isTooManyRequests()).andReturn();
         checkTestErrorCode(result, "number_code_attempts");
     }

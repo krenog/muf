@@ -2,19 +2,29 @@ package com.krenog.myf.user.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.krenog.myf.user.services.authentication.AuthenticationData;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Email;
 
 public class UserDataDto {
     @JsonProperty("id")
+    @ApiModelProperty(notes = "Идентификатор пользователя")
     private Long id;
     @JsonProperty("phoneNumber")
+    @ApiModelProperty(notes = "Номер телефона")
     private String phoneNumber;
     @JsonProperty("username")
+    @ApiModelProperty(notes = "Никнейм")
     private String username;
     @JsonProperty("email")
+    @Email(regexp=".*@.*\\..*", message = "Email should be valid")
+    @ApiModelProperty(notes = "Почта")
     private String email;
     @JsonProperty("firstName")
+    @ApiModelProperty(notes = "Имя")
     private String firstName;
     @JsonProperty("lastName")
+    @ApiModelProperty(notes = "Фамилия")
     private String lastName;
 
     public UserDataDto(AuthenticationData authenticationData) {

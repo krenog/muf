@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService,CommonUserService {
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
-    private User getUserById(Long id) {
+    public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             return user.get();

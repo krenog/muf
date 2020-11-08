@@ -1,7 +1,5 @@
 package com.krenog.myf.user.service;
 
-import com.krenog.myf.user.dto.authentication.SignInRequestDto;
-import com.krenog.myf.user.dto.authentication.SignUpRequestDto;
 import com.krenog.myf.user.entities.User;
 import com.krenog.myf.user.security.detail.UserPrincipal;
 import com.krenog.myf.user.security.jwt.JwtProvider;
@@ -23,25 +21,12 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.krenog.myf.user.UserTestUtils.*;
+import static com.krenog.myf.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest
 public class MockAuthenticationServiceTests {
-
-    private static final SignInRequestDto signInRequestDto;
-    private static final SignUpRequestDto signUpRequestDto;
-
-    static {
-        signInRequestDto = new SignInRequestDto();
-        signInRequestDto.setPhoneNumber(TEST_PHONE_NUMBER);
-        signInRequestDto.setCode(TEST_CODE);
-
-        signUpRequestDto = new SignUpRequestDto();
-        signUpRequestDto.setPhoneNumber(TEST_PHONE_NUMBER);
-        signUpRequestDto.setCode(TEST_CODE);
-        signUpRequestDto.setUsername(TEST_USERNAME);
-    }
 
     @InjectMocks
     AuthenticationServiceImpl authenticationService;
@@ -111,7 +96,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(anyString()))
                 .thenReturn(null);
         //check
-        Throwable exception = assertThrows(CodeDoesNotExistException.class, () -> authenticationService.signIn(signInRequestDto));
+        Throwable exception = assertThrows(CodeDoesNotExistException.class, () -> authenticationService.signIn(SIGN_IN_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Code does not exist");
         Mockito.verify(cacheService, Mockito.times(1)).getValue(TEST_PHONE_NUMBER);
     }
@@ -124,7 +109,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(TEST_CODE_TRY_KEY))
                 .thenReturn("0");
         //check
-        Throwable exception = assertThrows(InvalidVerificationCodeException.class, () -> authenticationService.signIn(signInRequestDto));
+        Throwable exception = assertThrows(InvalidVerificationCodeException.class, () -> authenticationService.signIn(SIGN_IN_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Invalid Verification Code");
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
     }
@@ -137,7 +122,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(TEST_CODE_TRY_KEY))
                 .thenReturn("10");
         //check
-        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signIn(signInRequestDto));
+        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signIn(SIGN_IN_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Number code attempts");
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
     }
@@ -150,7 +135,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(TEST_CODE_TRY_KEY))
                 .thenReturn(null);
         //check
-        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signIn(signInRequestDto));
+        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signIn(SIGN_IN_REQUEST_DTO));
         Assertions.assertEquals("Checking sms code attempts error", exception.getMessage());
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
     }
@@ -159,9 +144,7 @@ public class MockAuthenticationServiceTests {
     @Test
     void signInTest() {
         String session = "test";
-        User user = new User();
-        user.setId(1L);
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
+        User user = getTestUserWithId();
 
         //prepare data
         Mockito.when(cacheService.getValue(TEST_PHONE_NUMBER))
@@ -173,7 +156,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(jwtProvider.generateJwtToken(any(UserPrincipal.class)))
                 .thenReturn(session);
         //check
-        AuthenticationData authenticationData = authenticationService.signIn(signInRequestDto);
+        AuthenticationData authenticationData = authenticationService.signIn(SIGN_IN_REQUEST_DTO);
 
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
         Mockito.verify(cacheService, Mockito.times(1)).incrementValue(anyString());
@@ -190,7 +173,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(anyString()))
                 .thenReturn(null);
         //check
-        Throwable exception = assertThrows(CodeDoesNotExistException.class, () -> authenticationService.signUp(signUpRequestDto));
+        Throwable exception = assertThrows(CodeDoesNotExistException.class, () -> authenticationService.signUp(SIGN_UP_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Code does not exist");
         Mockito.verify(cacheService, Mockito.times(1)).getValue(TEST_PHONE_NUMBER);
     }
@@ -203,7 +186,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(TEST_CODE_TRY_KEY))
                 .thenReturn("0");
         //check
-        Throwable exception = assertThrows(InvalidVerificationCodeException.class, () -> authenticationService.signUp(signUpRequestDto));
+        Throwable exception = assertThrows(InvalidVerificationCodeException.class, () -> authenticationService.signUp(SIGN_UP_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Invalid Verification Code");
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
     }
@@ -216,7 +199,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(TEST_CODE_TRY_KEY))
                 .thenReturn("10");
         //check
-        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signUp(signUpRequestDto));
+        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signUp(SIGN_UP_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Number code attempts");
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
     }
@@ -229,7 +212,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(cacheService.getValue(TEST_CODE_TRY_KEY))
                 .thenReturn(null);
         //check
-        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signUp(signUpRequestDto));
+        Throwable exception = assertThrows(NumberCodeAttemptsException.class, () -> authenticationService.signUp(SIGN_UP_REQUEST_DTO));
         Assertions.assertEquals(exception.getMessage(), "Checking sms code attempts error");
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
     }
@@ -238,9 +221,7 @@ public class MockAuthenticationServiceTests {
     @Test
     void signUpTest() {
         String session = "test";
-        User user = new User();
-        user.setId(1L);
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
+        User user = getTestUserWithId();
 
         //prepare data
         Mockito.when(cacheService.getValue(TEST_PHONE_NUMBER))
@@ -252,7 +233,7 @@ public class MockAuthenticationServiceTests {
         Mockito.when(jwtProvider.generateJwtToken(any(UserPrincipal.class)))
                 .thenReturn(session);
         //check
-        AuthenticationData authenticationData = authenticationService.signUp(signUpRequestDto);
+        AuthenticationData authenticationData = authenticationService.signUp(SIGN_UP_REQUEST_DTO);
 
         Mockito.verify(cacheService, Mockito.times(2)).getValue(anyString());
         Mockito.verify(cacheService, Mockito.times(1)).incrementValue(anyString());

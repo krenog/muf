@@ -5,7 +5,7 @@ import com.krenog.myf.user.entities.User;
 import com.krenog.myf.user.repositories.UserRepository;
 import com.krenog.myf.user.services.authentication.exceptions.UserAlreadyExistException;
 import com.krenog.myf.user.services.user.CreateUserData;
-import com.krenog.myf.user.services.user.UserService;
+import com.krenog.myf.user.services.user.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,15 +14,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
-import static com.krenog.myf.user.UserTestUtils.TEST_PHONE_NUMBER;
-import static com.krenog.myf.user.UserTestUtils.TEST_USERNAME;
+import static com.krenog.myf.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class UserServiceTests {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
     @Autowired
     private UserRepository userRepository;
 
@@ -34,9 +33,7 @@ public class UserServiceTests {
     }
 
     private User saveUser() {
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setUsername(TEST_USERNAME);
+        User user = getTestUser();
         return userRepository.save(user);
     }
 
@@ -78,6 +75,18 @@ public class UserServiceTests {
         saveUser();
         //call function
         Exception exception = assertThrows(UserAlreadyExistException.class, () -> userService.createUser(new CreateUserData(TEST_USERNAME, TEST_PHONE_NUMBER)));
+    }
+
+    @Test
+    void getByIdTest() {
+        User user = saveUser();
+        //call
+        User foundedUser = userService.getUserById(user.getId());
+        // check
+        Assertions.assertEquals(
+                user.getId(), foundedUser.getId());
+        Assertions.assertEquals(
+                user.getPhoneNumber(), foundedUser.getPhoneNumber());
     }
 
     @Test

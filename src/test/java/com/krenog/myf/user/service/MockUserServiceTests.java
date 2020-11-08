@@ -16,7 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
-import static com.krenog.myf.user.UserTestUtils.*;
+import static com.krenog.myf.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 
@@ -30,9 +30,7 @@ public class MockUserServiceTests {
     @Test
     void getByPhoneNumberTest() {
         //prepare data
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setId(TEST_ID);
+        User user = getTestUserWithId();
         Mockito.when(userRepository.getByPhoneNumber(user.getPhoneNumber()))
                 .thenReturn(Optional.of(user));
         //call function
@@ -46,9 +44,7 @@ public class MockUserServiceTests {
     @Test
     void getByPhoneNumberNotFoundExceptionTest() {
         //prepare data
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setId(TEST_ID);
+        User user = getTestUserWithId();
         Mockito.when(userRepository.getByPhoneNumber(user.getPhoneNumber()))
                 .thenReturn(Optional.empty());
         //call function
@@ -60,9 +56,7 @@ public class MockUserServiceTests {
     @Test
     void createUserTest() {
         //prepare data
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setId(TEST_ID);
+        User user = getTestUserWithId();
         Mockito.when(userRepository.save(any(User.class)))
                 .thenReturn(user);
         //call function
@@ -89,9 +83,7 @@ public class MockUserServiceTests {
     @Test
     void updatePushTokenTest() {
         //prepare data
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setId(TEST_ID);
+        User user = getTestUserWithId();
         Mockito.when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         Mockito.when(userRepository.save(any(User.class)))
@@ -108,9 +100,6 @@ public class MockUserServiceTests {
     @Test
     void updatePushTokenTestNotFoundException() {
         //prepare data
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setId(TEST_ID);
         Mockito.when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         //call function
@@ -124,9 +113,7 @@ public class MockUserServiceTests {
     @Test
     void updateLastLoginTest() {
         //prepare data
-        User user = new User();
-        user.setPhoneNumber(TEST_PHONE_NUMBER);
-        user.setId(TEST_ID);
+        User user = getTestUser();
         Mockito.when(userRepository.save(any(User.class)))
                 .thenReturn(user);
         //call function
@@ -182,5 +169,31 @@ public class MockUserServiceTests {
         // check
         Assertions.assertFalse(exist);
         Mockito.verify(userRepository, Mockito.times(1)).existsByPhoneNumber(any());
+    }
+
+    @Test
+    void getByIdTest() {
+        //prepare data
+        User user = getTestUser();
+        Mockito.when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.of(user));
+        //call
+        User foundedUser = userService.getUserById(user.getId());
+        // check
+        Assertions.assertEquals(
+                user.getId(), foundedUser.getId());
+        Assertions.assertEquals(
+                user.getPhoneNumber(), foundedUser.getPhoneNumber());
+    }
+
+    @Test
+    void getByIdNotFoundException() {
+        //prepare data
+        Mockito.when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+        //call function
+        Exception exception = assertThrows(NotFoundException.class, () -> userService.getUserById(TEST_ID));
+        Assertions.assertEquals(
+                "User not found", exception.getMessage());
     }
 }

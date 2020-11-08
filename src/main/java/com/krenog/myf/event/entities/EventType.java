@@ -1,4 +1,4 @@
-package com.krenog.myf.user.entities;
+package com.krenog.myf.event.entities;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

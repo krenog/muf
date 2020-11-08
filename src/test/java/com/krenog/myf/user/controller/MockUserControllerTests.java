@@ -2,8 +2,6 @@ package com.krenog.myf.user.controller;
 
 import com.krenog.myf.user.controllers.UserController;
 import com.krenog.myf.user.controllers.exceptions.UserExceptionHandler;
-import com.krenog.myf.user.dto.user.CheckPhoneNumberRequestDto;
-import com.krenog.myf.user.dto.user.CheckUsernameRequestDto;
 import com.krenog.myf.user.services.user.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.krenog.myf.user.UserTestUtils.TEST_PHONE_NUMBER;
-import static com.krenog.myf.user.UserTestUtils.TEST_USERNAME;
+import static com.krenog.myf.user.UserTestUtils.CHECK_PHONE_NUMBER_REQUEST_DTO;
+import static com.krenog.myf.user.UserTestUtils.CHECK_USERNAME_REQUEST_DTO;
 import static com.krenog.myf.utils.TestConverter.mapToJson;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -31,15 +29,6 @@ public class MockUserControllerTests {
     private UserServiceImpl userService;
     @InjectMocks
     private UserController userController;
-    private static final CheckPhoneNumberRequestDto checkPhoneNumberRequestDto;
-    private static final CheckUsernameRequestDto checkUsernameRequestDto;
-
-    static {
-        checkPhoneNumberRequestDto = new CheckPhoneNumberRequestDto();
-        checkPhoneNumberRequestDto.setPhoneNumber(TEST_PHONE_NUMBER);
-        checkUsernameRequestDto = new CheckUsernameRequestDto();
-        checkUsernameRequestDto.setUsername(TEST_USERNAME);
-    }
 
     @BeforeEach
     public void setUp() {
@@ -56,7 +45,7 @@ public class MockUserControllerTests {
                 .thenReturn(true);
         mockMvc.perform(post("/api/v1/user/check-phone/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(checkPhoneNumberRequestDto)))
+                .content(mapToJson(CHECK_PHONE_NUMBER_REQUEST_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.exist", is(true)));
     }
@@ -68,7 +57,7 @@ public class MockUserControllerTests {
                 .thenReturn(false);
         mockMvc.perform(post("/api/v1/user/check-phone/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(checkPhoneNumberRequestDto)))
+                .content(mapToJson(CHECK_PHONE_NUMBER_REQUEST_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.exist", is(false)));
     }
@@ -80,7 +69,7 @@ public class MockUserControllerTests {
                 .thenReturn(true);
         mockMvc.perform(post("/api/v1/user/check-username/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(checkUsernameRequestDto)))
+                .content(mapToJson(CHECK_USERNAME_REQUEST_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.exist", is(true)));
     }
@@ -92,7 +81,7 @@ public class MockUserControllerTests {
                 .thenReturn(false);
         mockMvc.perform(post("/api/v1/user/check-username/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(checkUsernameRequestDto)))
+                .content(mapToJson(CHECK_USERNAME_REQUEST_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.exist", is(false)));
     }

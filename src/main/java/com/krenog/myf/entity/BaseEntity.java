@@ -1,4 +1,4 @@
-package com.krenog.myf.user.entities;
+package com.krenog.myf.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

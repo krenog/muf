@@ -1,9 +1,12 @@
 package com.krenog.myf.user.entities;
 
+import com.krenog.myf.entity.BaseEntity;
+import com.krenog.myf.event.entities.EventMember;
 import com.krenog.myf.user.services.user.CreateUserData;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "myf_user")
@@ -31,7 +34,6 @@ public class User extends BaseEntity {
 
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();
-
 
     @PrePersist
     @PreUpdate

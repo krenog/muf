@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.krenog.myf.user.UserTestUtils.TEST_PHONE_NUMBER;
 import static com.krenog.myf.user.UserTestUtils.TEST_VALUE;
+import static com.krenog.myf.utils.TestUtils.TEST_PHONE_NUMBER;
 
 @SpringBootTest
 public class CacheServiceTests {

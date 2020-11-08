@@ -1,55 +1,41 @@
-package com.krenog.myf.user.entities;
+package com.krenog.myf.event.dto.event;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.krenog.myf.event.entities.EventType;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "muf_event")
-public class Event extends BaseEntity {
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private User owner;
-
-    @Column(name = "name", nullable = false)
+public class CreateEventDto {
+    @JsonProperty(value = "name", required = true)
+    @Size(min = 5, message = "Name should not be less length than 5")
+    @ApiModelProperty(notes = "Название события", required = true)
     private String name;
-
-    @Column(name = "description")
+    @JsonProperty("description")
+    @ApiModelProperty(notes = "Описание")
     private String description;
-
-    @Column(name = "address")
+    @JsonProperty("address")
+    @ApiModelProperty(notes = "Адрес")
     private String address;
-
-    @Column(name = "latitude")
+    @JsonProperty("latitude")
+    @ApiModelProperty(notes = "Широта")
     private Float latitude;
-
-    @Column(name = "longitude")
+    @JsonProperty("longitude")
+    @ApiModelProperty(notes = "Долгота")
     private Float longitude;
-
-    @Column(name = "type")
+    @JsonProperty("type")
+    @ApiModelProperty(notes = "Тип события", dataType = "Integer", allowableValues = "0 - public, 1 - private")
     private EventType type = EventType.PUBLIC;
-
-    @Column(name = "status")
-    private EventStatus status = EventStatus.CREATED;
-
-    @Column(name = "start_date")
+    @JsonProperty("startDate")
+    @ApiModelProperty(notes = "Дата и время начала события")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime startDate;
-
-    @Column(name = "end_date")
+    @JsonProperty("endDate")
+    @ApiModelProperty(notes = "Дата и время конца события")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime endDate;
-
-    @PrePersist
-    @PreUpdate
-    public void preUpdate() {
-        super.setUpdateDate(LocalDateTime.now());
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
 
     public String getName() {
         return name;
@@ -97,14 +83,6 @@ public class Event extends BaseEntity {
 
     public void setType(EventType type) {
         this.type = type;
-    }
-
-    public EventStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EventStatus status) {
-        this.status = status;
     }
 
     public LocalDateTime getStartDate() {

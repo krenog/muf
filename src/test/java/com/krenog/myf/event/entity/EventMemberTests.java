@@ -5,11 +5,13 @@ import com.krenog.myf.event.entities.EventMember;
 import com.krenog.myf.event.entities.MemberRole;
 import com.krenog.myf.user.entities.User;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.krenog.myf.event.utils.EventUtils.getTestEventWithId;
 import static com.krenog.myf.utils.TestUtils.getTestUserWithId;
 
+@Tag("CommonTest")
 public class EventMemberTests {
 
     @Test

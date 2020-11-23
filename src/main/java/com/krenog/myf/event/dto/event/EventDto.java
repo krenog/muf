@@ -7,21 +7,13 @@ import com.krenog.myf.event.entities.EventStatus;
 import com.krenog.myf.event.entities.EventType;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-public class EventDto {
-    @JsonProperty("id")
-    @ApiModelProperty(notes = "Идентификатор события")
-    private Long id;
+public class EventDto extends CommonEventDto {
     @JsonProperty("createdDate")
     @ApiModelProperty(notes = "Дата создания")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime createdDate;
-    @JsonProperty(value = "name", required = true)
-    @Size(min = 5, message = "Name should not be less length than 5")
-    @ApiModelProperty(notes = "Название события", required = true)
-    private String name;
     @JsonProperty("description")
     @ApiModelProperty(notes = "Описание")
     private String description;
@@ -50,9 +42,8 @@ public class EventDto {
     private EventStatus status;
 
     public EventDto(Event event) {
-        this.id = event.getId();
+        super(event);
         this.createdDate = event.getCreatedDate();
-        this.name = event.getName();
         this.description = event.getDescription();
         this.address = event.getAddress();
         this.latitude = event.getLatitude();
@@ -66,28 +57,12 @@ public class EventDto {
     public EventDto() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {

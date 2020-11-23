@@ -7,6 +7,7 @@ import com.krenog.myf.user.services.authentication.AuthenticationService;
 import com.krenog.myf.user.services.cache.CacheService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import static com.krenog.myf.utils.TestUtils.TEST_PHONE_NUMBER;
 import static com.krenog.myf.utils.TestUtils.getTestUser;
 
 @SpringBootTest
+@Tag("RealTest")
 public class AuthenticationServiceTests {
     @Autowired
     private CacheService cacheService;

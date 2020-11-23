@@ -1,21 +1,22 @@
 package com.krenog.myf.event.entities;
 
 import com.krenog.myf.entity.BaseEntity;
+import com.krenog.myf.event.services.invite.InviteData;
 import com.krenog.myf.user.entities.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "muf_invite")
+@Table(name = "myf_invite")
 public class Invite extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "referring_user")
-    private User referringUser;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "invitee_user")
-    private User inviteeUser;
+    @JoinColumn(name = "invited_user_id")
+    private User invitedUser;
 
     @ManyToOne
     @JoinColumn(name = "event")
@@ -29,20 +30,29 @@ public class Invite extends BaseEntity {
         super.setUpdateDate(LocalDateTime.now());
     }
 
-    public User getReferringUser() {
-        return referringUser;
+    public Invite() {
     }
 
-    public void setReferringUser(User referringUser) {
-        this.referringUser = referringUser;
+    public Invite(InviteData inviteData) {
+        this.user = inviteData.getFromUser();
+        this.invitedUser = inviteData.getToUser();
+        this.event = inviteData.getEvent();
     }
 
-    public User getInviteeUser() {
-        return inviteeUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setInviteeUser(User inviteeUser) {
-        this.inviteeUser = inviteeUser;
+    public void setUser(User referringUser) {
+        this.user = referringUser;
+    }
+
+    public User getInvitedUser() {
+        return invitedUser;
+    }
+
+    public void setInvitedUser(User invitedUser) {
+        this.invitedUser = invitedUser;
     }
 
     public Event getEvent() {

@@ -1,7 +1,9 @@
 package com.krenog.myf.event.controllers;
 
-import com.krenog.myf.event.dto.event.CreateEventDto;
 import com.krenog.myf.event.dto.event.EventDto;
+import com.krenog.myf.event.dto.event.EventFilterParameters;
+import com.krenog.myf.event.dto.event.EventWithMembershipDto;
+import com.krenog.myf.event.dto.event.CreateEventDto;
 import com.krenog.myf.event.entities.Event;
 import com.krenog.myf.event.services.event.EventService;
 import com.krenog.myf.user.security.detail.UserPrincipal;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/event")
@@ -25,17 +29,29 @@ public class EventController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "Создание  события")
-    public ResponseEntity<EventDto> saveEvent(@RequestBody CreateEventDto createEventDto, Authentication authentication) {
+    public ResponseEntity<EventDto> saveEvent(@RequestBody CreateEventDto createEventDto,
+                                              Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Event event = eventService.createEvent(createEventDto, userPrincipal.getId());
-        return new ResponseEntity<>(new EventDto(event), HttpStatus.OK);
+        return new ResponseEntity<>(new EventDto(event), HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/save/{id}")
+    @PutMapping(value = "/save/{id}")
     @ApiOperation(value = "Обновление  события")
-    public ResponseEntity<EventDto> updateEvent(@RequestBody CreateEventDto createEventDto, @ApiParam(value = "Event Id", required = true) @PathVariable(name = "id") Long eventId, Authentication authentication) {
+    public ResponseEntity<EventDto> updateEvent(@ApiParam(value = "Event Id", required = true) @PathVariable(name = "id") Long eventId,
+                                                @RequestBody CreateEventDto createEventDto,
+                                                Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Event event = eventService.updateEvent(eventId, createEventDto, userPrincipal.getId());
         return new ResponseEntity<>(new EventDto(event), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "")
+    @ApiOperation(value = "Получение списка событий")
+    public ResponseEntity<List<EventWithMembershipDto>> getEventList(EventFilterParameters eventFilterDto,
+                                                                     Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        List<EventWithMembershipDto> eventsWithMembership = eventService.getUserEventsWithMembership(eventFilterDto, userPrincipal.getId());
+        return new ResponseEntity<>(eventsWithMembership, HttpStatus.OK);
     }
 }

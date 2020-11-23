@@ -1,17 +1,21 @@
 package com.krenog.myf.user.services.user;
 
-import com.krenog.myf.exceptions.NotFoundException;
+import com.krenog.myf.user.dto.user.FindUsersByUsernameParameters;
 import com.krenog.myf.user.entities.User;
+import com.krenog.myf.user.exceptions.UserNotFoundException;
 import com.krenog.myf.user.repositories.UserRepository;
 import com.krenog.myf.user.services.authentication.exceptions.UserAlreadyExistException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService,CommonUserService {
+public class UserServiceImpl implements UserService, CommonUserService {
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -22,7 +26,7 @@ public class UserServiceImpl implements UserService,CommonUserService {
     public User getUserByPhoneNumber(String phoneNumber) {
         Optional<User> optionalUser = userRepository.getByPhoneNumber(phoneNumber);
         return optionalUser.orElseGet(() -> {
-            throw new NotFoundException("User not found by phoneNumber: " + phoneNumber);
+            throw new UserNotFoundException("User not found by phoneNumber: " + phoneNumber);
         });
     }
 
@@ -58,12 +62,18 @@ public class UserServiceImpl implements UserService,CommonUserService {
         return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
+    @Override
+    public List<User> findUsersByUsername(FindUsersByUsernameParameters findUsersByUsernameDto) {
+        Pageable pageable = PageRequest.of(findUsersByUsernameDto.getOffset(), findUsersByUsernameDto.getLimit());
+        return userRepository.findByUsernameStartsWith(findUsersByUsernameDto.getUsername(), pageable);
+    }
+
     public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new NotFoundException("User not found");
+            throw new UserNotFoundException("User not found");
         }
     }
 }

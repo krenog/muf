@@ -3,6 +3,7 @@ package com.krenog.myf.user.service;
 import com.krenog.myf.user.services.cache.CacheService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ import static com.krenog.myf.user.UserTestUtils.TEST_VALUE;
 import static com.krenog.myf.utils.TestUtils.TEST_PHONE_NUMBER;
 
 @SpringBootTest
+@Tag("RealTest")
 public class CacheServiceTests {
 
     @Autowired

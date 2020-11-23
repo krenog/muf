@@ -8,6 +8,7 @@ import com.krenog.myf.user.services.user.CreateUserData;
 import com.krenog.myf.user.services.user.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import static com.krenog.myf.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@Tag("RealTest")
 public class UserServiceTests {
 
     @Autowired

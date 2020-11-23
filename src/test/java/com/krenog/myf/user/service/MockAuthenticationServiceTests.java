@@ -14,10 +14,13 @@ import com.krenog.myf.user.services.sms.SmsService;
 import com.krenog.myf.user.services.user.CreateUserData;
 import com.krenog.myf.user.services.user.UserService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.krenog.myf.user.UserTestUtils.*;
@@ -25,7 +28,8 @@ import static com.krenog.myf.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@Tag("CommonTest")
 public class MockAuthenticationServiceTests {
 
     @InjectMocks

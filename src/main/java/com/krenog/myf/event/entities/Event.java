@@ -3,6 +3,8 @@ package com.krenog.myf.event.entities;
 import com.krenog.myf.entity.BaseEntity;
 import com.krenog.myf.event.dto.event.CreateEventDto;
 import com.krenog.myf.user.entities.User;
+import com.krenog.myf.utils.LocationUtils;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "muf_event")
+@Table(name = "myf_event")
 public class Event extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "owner_id")
@@ -25,11 +27,8 @@ public class Event extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "latitude")
-    private Float latitude;
-
-    @Column(name = "longitude")
-    private Float longitude;
+    @Column(name = "point")
+    private Point point;
 
     @Column(name = "type")
     private EventType type = EventType.PUBLIC;
@@ -44,6 +43,7 @@ public class Event extends BaseEntity {
     private LocalDateTime endDate;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "event_id", referencedColumnName = "id")
     private List<EventMember> members = new ArrayList<>();
 
     @PrePersist
@@ -58,17 +58,22 @@ public class Event extends BaseEntity {
     public Event(User owner, CreateEventDto createEventDto) {
         this.update(createEventDto);
         this.owner = owner;
+        addOwnerMember();
     }
 
     public void update(CreateEventDto createEventDto) {
         this.name = createEventDto.getName();
         this.description = createEventDto.getDescription();
         this.address = createEventDto.getAddress();
-        this.latitude = createEventDto.getLatitude();
-        this.longitude = createEventDto.getLongitude();
+        this.point = LocationUtils.buildPoint(createEventDto.getLatitude(), createEventDto.getLongitude());
         this.type = createEventDto.getType();
         this.startDate = createEventDto.getStartDate();
         this.endDate = createEventDto.getEndDate();
+    }
+
+    private void addOwnerMember() {
+        EventMember member = EventMember.createOwner(this);
+        this.addMember(member);
     }
 
     public void addMember(EventMember member) {
@@ -112,24 +117,20 @@ public class Event extends BaseEntity {
         return address;
     }
 
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }
 
     public Float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Float latitude) {
-        this.latitude = latitude;
+        return (float) point.getX();
     }
 
     public Float getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Float longitude) {
-        this.longitude = longitude;
+        return (float) point.getY();
     }
 
     public EventType getType() {

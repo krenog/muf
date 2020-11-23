@@ -73,7 +73,7 @@ public class JwtProvider {
     }
 
 
-    Boolean validateJwtToken(String token) {
+   protected boolean validateJwtToken(String token) {
         try {
             // Check JWT signature and audience
             Jws<Claims> jwt = Jwts.parser()
@@ -84,7 +84,7 @@ public class JwtProvider {
             // Make sure JWT is still valid  (notBefore < now < expiration)
             return jwt.getBody().getNotBefore().before(new Date()) && jwt.getBody().getExpiration().after(new Date());
         } catch (Exception ex) {
-            logger.error("JWT not properly signed or with wrong audience : " + token);
+            logger.info("JWT not properly signed or with wrong audience : " + token);
             return false;
         }
     }

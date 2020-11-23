@@ -2,6 +2,7 @@ package com.krenog.myf.event.utils;
 
 import com.krenog.myf.event.dto.event.CreateEventDto;
 import com.krenog.myf.event.entities.Event;
+import com.krenog.myf.utils.LocationUtils;
 
 import java.time.LocalDateTime;
 
@@ -26,8 +27,7 @@ public class EventUtils {
         event.setName(TEST_EVENT_NAME);
         event.setAddress(TEST_EVENT_ADDRESS);
         event.setDescription(TEST_EVENT_DESCRIPTION);
-        event.setLatitude(TEST_EVENT_LATITUDE);
-        event.setLongitude(TEST_EVENT_LONGITUDE);
+        event.setPoint(LocationUtils.buildPoint(TEST_EVENT_LATITUDE, TEST_EVENT_LONGITUDE));
         event.setStartDate(TEST_EVENT_START_DATE);
         event.setEndDate(TEST_EVENT_END_DATE);
         return event;

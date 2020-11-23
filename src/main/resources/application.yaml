@@ -1,6 +1,6 @@
 server:
   version: 0.0.1
-  name: Muf
+  name: Myf
   site: "http://127.0.0.1:8088"
   tomcat:
     accesslog:
@@ -21,8 +21,8 @@ spring:
     database: postgresql
     properties:
       hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
         temp.use_jdbc_metadata_defaults: false
-
     show-sql: false
     hibernate:
       ddl-auto: update
@@ -53,7 +53,7 @@ sms:
   enabled: false
   smsc:
     url: https://smsc.ru/sys/send.php
-    originator: MUF
+    originator: MYF
     login: "krenog"
     password: "aseaf19450"
   test:
@@ -64,8 +64,8 @@ com:
     filter:
       excluded:
         - /docs/**
+        - /v2/api-docs
         - /swagger-ui.html
-        - /*
         - /webjars/**
         - /swagger-resources/**
         - /api/v1/auth/**

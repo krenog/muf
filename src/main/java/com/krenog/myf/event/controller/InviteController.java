@@ -1,4 +1,4 @@
-package com.krenog.myf.event.controllers;
+package com.krenog.myf.event.controller;
 
 import com.krenog.myf.dto.FilterParameters;
 import com.krenog.myf.event.dto.invite.CreateInviteDto;
@@ -36,7 +36,7 @@ public class InviteController {
 
     @GetMapping(value = "")
     @ApiOperation(value = "Получить список приглашений")
-    public ResponseEntity<List<InviteDto>> saveEvent(FilterParameters filterParameters,
+    public ResponseEntity<List<InviteDto>> getInvites(FilterParameters filterParameters,
                                                      Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         List<Invite> invites = inviteService.getUserInvites(userPrincipal.getId(), filterParameters);
@@ -45,7 +45,7 @@ public class InviteController {
     }
 
     @PostMapping(value = "/send")
-    @ApiOperation(value = "Получить список приглашений")
+    @ApiOperation(value = "Пригласить")
     public ResponseEntity<String> sendInvite(@RequestBody CreateInviteDto createInviteDto,
                                              Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -53,13 +53,12 @@ public class InviteController {
                 userService.getUserById(userPrincipal.getId()),
                 userService.getUserById(createInviteDto.getInvitedUserId()),
                 eventService.getById(createInviteDto.getEventId())
-
         );
         inviteService.checkAndCreateInvite(inviteData);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/accept/{id}")
+    @PostMapping(value = "/{id}/accept")
     @ApiOperation(value = "Принять приглашение")
     public ResponseEntity<String> acceptInvite(@ApiParam(value = "Invite Id", required = true) @PathVariable(name = "id") Long inviteId,
                                                Authentication authentication) {
@@ -68,7 +67,7 @@ public class InviteController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/reject/{id}")
+    @PostMapping(value = "/{id}/reject")
     @ApiOperation(value = "Принять приглашение")
     public ResponseEntity<String> rejectInvite(@ApiParam(value = "Invite Id", required = true) @PathVariable(name = "id") Long inviteId,
                                                Authentication authentication) {

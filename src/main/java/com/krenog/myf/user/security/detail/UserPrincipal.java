@@ -23,16 +23,14 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    private User user;
 
     public UserPrincipal(Long id,
                          String username, String password,
-                         Collection<? extends GrantedAuthority> authorities,User user) {
+                         Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-        this.user = user;
     }
 
     public static UserPrincipal build(User user) {
@@ -41,8 +39,7 @@ public class UserPrincipal implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 "",
-                authorities,
-                user
+                authorities
         );
     }
 
@@ -83,10 +80,6 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     @Override

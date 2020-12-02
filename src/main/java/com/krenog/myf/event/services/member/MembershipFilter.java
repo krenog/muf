@@ -12,11 +12,18 @@ public class MembershipFilter {
     private MemberRole role;
 
 
-    public MembershipFilter(Long userId,@NotNull EventFilterParameters eventFilterDto) {
+    public MembershipFilter(@NotNull Long userId,@NotNull EventFilterParameters eventFilterDto) {
         this.userId = userId;
         this.offset = eventFilterDto.getOffset();
         this.limit = eventFilterDto.getLimit();
         this.role = eventFilterDto.getRole();
+    }
+
+    public MembershipFilter(Long userId, Integer offset, Integer limit, MemberRole role) {
+        this.userId = userId;
+        this.offset = offset;
+        this.limit = limit;
+        this.role = role;
     }
 
     public MemberRole getRole() {

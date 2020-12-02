@@ -11,6 +11,8 @@ import com.krenog.myf.event.services.member.MembershipFilter;
 import com.krenog.myf.exceptions.NotFoundException;
 import com.krenog.myf.user.entities.User;
 import com.krenog.myf.user.services.user.CommonUserService;
+import com.krenog.myf.utils.LocationUtils;
+import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,19 +20,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventServiceImpl implements EventService {
+    public static final float DELTA = 2.0f;
     private final EventRepository eventRepository;
-    private final CommonUserService userService;
     private final EventMemberService eventMemberService;
 
-    public EventServiceImpl(EventRepository eventRepository, CommonUserService userService, EventMemberService eventMemberService) {
+    public EventServiceImpl(EventRepository eventRepository, EventMemberService eventMemberService) {
         this.eventRepository = eventRepository;
-        this.userService = userService;
         this.eventMemberService = eventMemberService;
     }
 
     @Override
-    public Event createEvent(CreateEventDto createEventDto, Long userId) {
-        User user = userService.getUserById(userId);
+    public Event createEvent(CreateEventDto createEventDto, User user) {
         Event event = new Event(user, createEventDto);
         return saveEvent(event);
     }
@@ -46,6 +46,17 @@ public class EventServiceImpl implements EventService {
     public List<EventWithMembershipDto> getUserEventsWithMembership(EventFilterParameters eventFilterDto, Long userId) {
         List<EventMember> memberships = getMemberships(eventFilterDto, userId);
         return memberships.stream().map(x -> new EventWithMembershipDto(x.getEvent(), x.getRole())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> getNearestEventsByUserLocation(Float latitude, Float longitude) {
+        Polygon polygon = LocationUtils.buildPolygon(latitude,longitude, DELTA);
+        return eventRepository.getNearestAllEvent(polygon);
+    }
+
+    @Override
+    public void leaveEvent(Long userId, Long eventId) {
+        eventMemberService.deleteMembership(userId, eventId);
     }
 
     private List<EventMember> getMemberships(EventFilterParameters eventFilterDto, Long userId) {

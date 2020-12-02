@@ -33,10 +33,15 @@ public class EventMemberServiceImpl implements EventMemberService {
 
     @Override
     public EventMember createEventMember(Invite invite) {
-        if (!eventMemberRepository.existsByEventAndUser(invite.getEvent(),invite.getUser())){
-            return eventMemberRepository.save(EventMember.createGuest(invite.getUser(),invite.getEvent()));
+        if (!eventMemberRepository.existsByEventAndUser(invite.getEvent(),invite.getInvitedUser())){
+            return eventMemberRepository.save(EventMember.createGuest(invite.getInvitedUser(),invite.getEvent()));
         }else{
             throw new MemberAlreadyExistException();
         }
+    }
+
+    @Override
+    public void deleteMembership(Long userId, Long eventId) {
+        eventMemberRepository.deleteMembership(userId, eventId);
     }
 }

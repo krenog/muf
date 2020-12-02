@@ -9,4 +9,6 @@ public interface EventMemberService {
     List<EventMember> getMemberships(MembershipFilter membershipFilter);
 
     EventMember createEventMember(Invite invite);
+
+    void deleteMembership(Long userId,Long eventId);
 }

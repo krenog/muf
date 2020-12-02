@@ -14,6 +14,14 @@ public class FilterParameters {
     @ApiParam(value = "Номер страницы")
     private Integer offset = 0;
 
+    public FilterParameters() {
+    }
+
+    public FilterParameters(@Max(value = 100, message = "limit should be less than 100") Integer limit, @Min(value = 1, message = "limit should be more than 0") Integer offset) {
+        this.limit = limit;
+        this.offset = offset;
+    }
+
     public Integer getLimit() {
         return limit;
     }

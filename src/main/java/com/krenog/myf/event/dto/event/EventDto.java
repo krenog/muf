@@ -8,6 +8,7 @@ import com.krenog.myf.event.entities.EventType;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class EventDto extends CommonEventDto {
     @JsonProperty("createdDate")
@@ -127,5 +128,27 @@ public class EventDto extends CommonEventDto {
 
     public void setStatus(EventStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventDto)) return false;
+        if (!super.equals(o)) return false;
+        EventDto eventDto = (EventDto) o;
+        return Objects.equals(createdDate, eventDto.createdDate) &&
+                Objects.equals(description, eventDto.description) &&
+                Objects.equals(address, eventDto.address) &&
+                Objects.equals(latitude, eventDto.latitude) &&
+                Objects.equals(longitude, eventDto.longitude) &&
+                type == eventDto.type &&
+                Objects.equals(startDate, eventDto.startDate) &&
+                Objects.equals(endDate, eventDto.endDate) &&
+                status == eventDto.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), createdDate, description, address, latitude, longitude, type, startDate, endDate, status);
     }
 }

@@ -82,8 +82,6 @@ public class MockAuthenticationServiceTests {
         //prepare data
         Mockito.when(config.isTrafficEnabled())
                 .thenReturn(true);
-        Mockito.when(config.getTestCode())
-                .thenReturn(TEST_CODE);
         Mockito.when(config.getPhone())
                 .thenReturn("12345678");
         //call function

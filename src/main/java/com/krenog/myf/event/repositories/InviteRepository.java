@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface InviteRepository extends JpaRepository<Invite, Long> {
     @Query("select inv from Invite inv join inv.event ev " +
-            "where inv.user.id = :userId " +
+            "where inv.invitedUser.id = :userId " +
             "and inv.inviteStatus = com.krenog.myf.event.entities.InviteStatus.CREATED " +
             "and  ev.status = com.krenog.myf.event.entities.EventStatus.ACTIVE order by inv.createdDate")
     List<Invite> findAllByInvitedUserOrderByCreatedDate(@Param("userId") Long userId, Pageable pageable);

@@ -5,6 +5,7 @@ import com.krenog.myf.event.entities.Event;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 public class CommonEventDto {
     @JsonProperty("id")
@@ -37,5 +38,19 @@ public class CommonEventDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CommonEventDto)) return false;
+        CommonEventDto that = (CommonEventDto) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

@@ -178,7 +178,7 @@ public class MockUserServiceTests {
     @Test
     void getByIdTest() {
         //prepare data
-        User user = getTestUser();
+        User user = getTestUserWithId();
         Mockito.when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         //call

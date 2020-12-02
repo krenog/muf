@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "myf_event")
@@ -163,5 +164,27 @@ public class Event extends BaseEntity {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(owner, event.owner) &&
+                Objects.equals(name, event.name) &&
+                Objects.equals(description, event.description) &&
+                Objects.equals(address, event.address) &&
+                Objects.equals(point, event.point) &&
+                type == event.type &&
+                status == event.status &&
+                Objects.equals(startDate, event.startDate) &&
+                Objects.equals(endDate, event.endDate) &&
+                Objects.equals(members, event.members);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(owner, name, description, address, point, type, status, startDate, endDate, members);
     }
 }

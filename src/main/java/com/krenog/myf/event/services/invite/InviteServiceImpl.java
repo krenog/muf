@@ -9,7 +9,6 @@ import com.krenog.myf.event.repositories.InviteRepository;
 import com.krenog.myf.event.services.member.EventMemberService;
 import com.krenog.myf.exceptions.NotFoundException;
 import com.krenog.myf.user.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,12 +19,12 @@ import java.util.List;
 @Service
 public class InviteServiceImpl implements InviteService {
     private final InviteRepository inviteRepository;
-    @Autowired
-    private EventMemberService memberService;
+    private final EventMemberService memberService;
 
 
-    public InviteServiceImpl(InviteRepository inviteRepository) {
+    public InviteServiceImpl(InviteRepository inviteRepository, EventMemberService memberService) {
         this.inviteRepository = inviteRepository;
+        this.memberService = memberService;
     }
 
     @Override

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @Api(value = "Сервис аутентифкации")
@@ -32,7 +34,7 @@ public class AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(code = 502, message = "sms_traffic_unavailable")
     })
-    public void sendSmsCode(@RequestBody SendSmsDto dto) {
+    public void sendSmsCode(@RequestBody @Valid SendSmsDto dto) {
         authenticationService.sendSmsCode(dto.getPhoneNumber());
     }
 
@@ -44,7 +46,7 @@ public class AuthenticationController {
             @ApiResponse(code = 429, message = "number_code_attempts"),
             @ApiResponse(code = 400, message = "user_not_found"),
     })
-    public ResponseEntity<SignInResponseDto> signIn(@RequestBody SignInRequestDto dto) {
+    public ResponseEntity<SignInResponseDto> signIn(@RequestBody @Valid SignInRequestDto dto) {
         AuthenticationData authenticationData = authenticationService.signIn(dto);
         return new ResponseEntity<>(new SignInResponseDto(authenticationData), HttpStatus.OK);
     }
@@ -57,7 +59,7 @@ public class AuthenticationController {
             @ApiResponse(code = 429, message = "number_code_attempts"),
             @ApiResponse(code = 400, message = "user_not_found"),
     })
-    public ResponseEntity<SignInResponseDto> sendSmsCode(@RequestBody SignUpRequestDto dto) {
+    public ResponseEntity<SignInResponseDto> sendSmsCode(@RequestBody @Valid SignUpRequestDto dto) {
         AuthenticationData authenticationData = authenticationService.signUp(dto);
         return new ResponseEntity<>(new SignInResponseDto(authenticationData), HttpStatus.OK);
     }

@@ -28,7 +28,7 @@ Configutation:
   Loggers:
 
     Logger:
-      - name: com.krenog.myf
+      - name: com.krenog
         level: trace
         additivity: false
         AppenderRef:

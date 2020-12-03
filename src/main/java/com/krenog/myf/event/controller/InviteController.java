@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class InviteController {
 
     @GetMapping(value = "")
     @ApiOperation(value = "Получить список приглашений")
-    public ResponseEntity<List<InviteDto>> getInvites(FilterParameters filterParameters,
+    public ResponseEntity<List<InviteDto>> getInvites(@Valid FilterParameters filterParameters,
                                                      Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         List<Invite> invites = inviteService.getUserInvites(userPrincipal.getId(), filterParameters);
@@ -46,7 +47,7 @@ public class InviteController {
 
     @PostMapping(value = "/send")
     @ApiOperation(value = "Пригласить")
-    public ResponseEntity<String> sendInvite(@RequestBody CreateInviteDto createInviteDto,
+    public ResponseEntity<String> sendInvite(@RequestBody @Valid CreateInviteDto createInviteDto,
                                              Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         InviteData inviteData = new InviteData(

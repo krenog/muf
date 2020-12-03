@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class EventController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "Создание  события")
-    public ResponseEntity<EventDto> saveEvent(@RequestBody CreateEventDto createEventDto,
+    public ResponseEntity<EventDto> saveEvent(@RequestBody @Valid CreateEventDto createEventDto,
                                               Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = userService.getUserById(userPrincipal.getId());
@@ -42,7 +43,7 @@ public class EventController {
     @PutMapping(value = "/save/{id}")
     @ApiOperation(value = "Обновление  события")
     public ResponseEntity<EventDto> updateEvent(@ApiParam(value = "Event Id", required = true) @PathVariable(name = "id") Long eventId,
-                                                @RequestBody CreateEventDto createEventDto,
+                                                @RequestBody @Valid CreateEventDto createEventDto,
                                                 Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Event event = eventService.updateEvent(eventId, createEventDto, userPrincipal.getId());
@@ -51,7 +52,7 @@ public class EventController {
 
     @GetMapping(value = "/member")
     @ApiOperation(value = "Получение списка событий")
-    public ResponseEntity<List<EventWithMembershipDto>> getEventList(EventFilterParameters eventFilterDto,
+    public ResponseEntity<List<EventWithMembershipDto>> getEventList(@Valid EventFilterParameters eventFilterDto,
                                                                      Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         List<EventWithMembershipDto> eventsWithMembership = eventService.getUserEventsWithMembership(eventFilterDto, userPrincipal.getId());
@@ -60,7 +61,7 @@ public class EventController {
 
     @PostMapping(value = "/nearest")
     @ApiOperation(value = "Получение ближайших событий по локации")
-    private ResponseEntity<List<EventDto>> findNearestEvents(@RequestBody LocationDto locationDto){
+    private ResponseEntity<List<EventDto>> findNearestEvents(@RequestBody @Valid LocationDto locationDto){
         List<Event> events = eventService.getNearestEventsByUserLocation(locationDto.getLatitude(),locationDto.getLongitude());
         List<EventDto> eventDtoList = events.stream().map(EventDto::new).collect(Collectors.toList());
         return new ResponseEntity<>(eventDtoList,HttpStatus.OK);

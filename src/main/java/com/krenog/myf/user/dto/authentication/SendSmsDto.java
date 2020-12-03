@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 public class SendSmsDto {
     @JsonProperty("phoneNumber")
-    @NotBlank
+    @NotBlank(message = "Phon cant be blank")
     @Size(max = 11,message = "Phone should be 11 length size")
     @ApiModelProperty(notes = "Номер телефона")
     private String phoneNumber;

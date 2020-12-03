@@ -1,5 +1,6 @@
 package com.krenog.myf.user.controllers.exceptions;
 
+import com.krenog.myf.config.AbstractExceptionHandler;
 import com.krenog.myf.dto.ErrorResponse;
 import com.krenog.myf.dto.TypeOfResponse;
 import com.krenog.myf.exceptions.NotFoundException;
@@ -12,20 +13,26 @@ import com.krenog.myf.user.services.authentication.exceptions.UserAlreadyExistEx
 import com.krenog.myf.user.services.sms.exceptions.SendSmsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice(basePackageClasses = {AuthenticationController.class, UserController.class})
-public class UserExceptionHandler extends ResponseEntityExceptionHandler {
+public class UserExceptionHandler extends AbstractExceptionHandler {
     private static final Logger log = LogManager.getLogger(UserExceptionHandler.class);
     private static final String UNKNOWN_CAUSE_MESSAGE = "Произошла непредвиденная ошибка.";
-    private static final Map<Object, TypeOfResponse> ERROR_MAPPING = new HashMap<>();
+
 
     static {
         ERROR_MAPPING.put(SendSmsException.class, new TypeOfResponse(HttpStatus.BAD_GATEWAY, "sms_traffic_unavailable", "Ошибка отправки смс."));
@@ -48,14 +55,7 @@ public class UserExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponse(ex);
     }
 
-    private ResponseEntity<ErrorResponse> getResponse(Exception ex) {
-        ErrorResponse errorResponse = null;
-        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (ERROR_MAPPING.containsKey(ex.getClass())) {
-            TypeOfResponse typeOfResponse = ERROR_MAPPING.get(ex.getClass());
-            errorResponse = new ErrorResponse(typeOfResponse.getCode(), typeOfResponse.getDescription());
-            httpStatus = typeOfResponse.getHttpStatus();
-        }
-        return new ResponseEntity<>(errorResponse, httpStatus);
-    }
+
+
+
 }

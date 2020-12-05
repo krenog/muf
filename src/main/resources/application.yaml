@@ -1,5 +1,5 @@
 server:
-  version: 0.0.1
+  version: 1.0.0
   name: Myf
   site: "http://127.0.0.1:8088"
   tomcat:
@@ -14,7 +14,7 @@ spring:
     hikari:
       maximum-pool-size: 20
     username: postgres
-    password: postgres
+    password: myfpassword2022!!
     url: jdbc:postgresql://localhost:5432/myf
     driver-class-name: org.postgresql.Driver
   jpa:

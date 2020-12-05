@@ -10,7 +10,7 @@ public class FilterParameters {
     @ApiParam(value = "Кол-во событий в ответе")
     private Integer limit = 10;
 
-    @Min(value = 1, message = "limit should be more than 0")
+    @Min(value = 0, message = "limit should be more than 0")
     @ApiParam(value = "Номер страницы")
     private Integer offset = 0;
 

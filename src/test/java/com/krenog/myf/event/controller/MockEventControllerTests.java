@@ -119,7 +119,6 @@ public class MockEventControllerTests {
 
         mockMvc.perform(get("/api/v1/event/member")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapToJson(getTestCreateEventDto()))
                 .principal(new AuthenticationForTest()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].role", is(MemberRole.GUEST.getValue())));

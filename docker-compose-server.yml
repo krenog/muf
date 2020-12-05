@@ -1,0 +1,69 @@
+version: "3.6"
+
+x-defaults: &defaults
+  hostname: "{{.Service.Name}}.{{.Node.Hostname}}"
+  env_file:
+    - &common-env .env
+  restart: always
+  logging:
+    options:
+      max-size: '30m'
+      max-file: '10'
+    driver: json-file
+  networks:
+    - &default-net myf
+#    - gasstation
+volumes:
+  redis:
+    driver_opts:
+      type: none
+      device: /opt/muf/redis
+      o: bind
+  static:
+    driver_opts:
+      type: none
+      device: /srv/dgs_new/static
+      o: bind
+  media:
+    driver_opts:
+      type: none
+      device: /srv/dgs_new/media
+      o: bind
+  gasstation-data:
+    driver_opts:
+      type: none
+      device: /opt/muf/myf-data
+      o: bind
+  postgresql:
+    driver_opts:
+      type: none
+      device: /opt/muf//postgresql
+      o: bind
+networks:
+  myf:
+    name: myf
+    driver: bridge
+    attachable: true
+services:
+  db:
+    <<: *defaults
+    env_file:
+      - *common-env
+      - .env_secrets
+    image: postgis/postgis:latest
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  redis:
+    <<: *defaults
+    env_file:
+      - *common-env
+      - .env_secrets
+    image: redis:5.0-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - redis:/data
+    ports:
+      - '6379:6379' 

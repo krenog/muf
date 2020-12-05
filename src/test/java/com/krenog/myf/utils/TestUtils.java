@@ -4,7 +4,7 @@ import com.krenog.myf.user.entities.User;
 
 public class TestUtils {
     public final static String TEST_PHONE_NUMBER = "7999999999";
-    public static final String TEST_USERNAME = "test";
+    public static final String TEST_USERNAME = "test_username";
     public static final Long TEST_ID = 1L;
 
     public static User getTestUserWithId() {

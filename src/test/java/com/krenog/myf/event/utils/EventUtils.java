@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import static com.krenog.myf.utils.TestUtils.getTestUserWithId;
 
 public class EventUtils {
-    private static final String TEST_EVENT_NAME = "name";
+    private static final String TEST_EVENT_NAME = "names";
     private static final Long TEST_EVENT_ID = 1L;
     private static final String TEST_EVENT_DESCRIPTION = "description";
     private static final String TEST_EVENT_ADDRESS = "address";
